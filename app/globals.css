@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Responsive base font size — makes all rem-based text larger on desktop */
+@media (min-width: 768px) {
+  html { font-size: 17px; }
+}
+@media (min-width: 1024px) {
+  html { font-size: 18px; }
+}
+
 /* Suppress number input spinners */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {

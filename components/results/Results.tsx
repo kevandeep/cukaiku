@@ -64,9 +64,9 @@ export function Results({ answers, onRestart }: ResultsProps) {
       <TaxBracketTable r={r} />
       <FormBETemplate r={r} />
 
-      {/* Disclaimer */}
-      <div className="mb-5 rounded-xl px-4 py-3.5 border border-red-400/12 bg-red-400/[0.03]">
-        <p className="text-[10px] text-slate-500 leading-relaxed">{t('disclaimer')}</p>
+      {/* Disclaimer — made visible before the CTA so users see it before acting */}
+      <div className="mb-5 rounded-xl px-4 py-4 border border-amber-400/20 bg-amber-400/[0.04]">
+        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{t('disclaimer')}</p>
       </div>
 
       <button

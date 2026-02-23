@@ -3,6 +3,7 @@
 import { useTranslation } from '@/contexts/TranslationContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Logo } from '@/components/ui/Logo';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { QuestionCard } from '@/components/questions/QuestionCard';
 import { Results } from '@/components/results/Results';
@@ -23,15 +24,10 @@ export default function CalculatorPage() {
           style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.03) 0%, transparent 70%)' }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-[540px]">
+      <div className="relative z-10 w-full max-w-[560px]">
         {/* Top bar */}
         <div className="flex justify-between items-center pt-3 mb-4">
-          <Link
-            href="/"
-            className="text-[10px] font-mono text-slate-400 dark:text-slate-600 tracking-widest uppercase hover:text-slate-600 dark:hover:text-slate-500 transition-colors"
-          >
-            ← {t('appName')}
-          </Link>
+          <Logo />
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
@@ -59,7 +55,7 @@ export default function CalculatorPage() {
           <Results answers={answers} onRestart={restart} />
         )}
 
-        {/* Fallback: shouldn't normally show — redirect to landing if no screen */}
+        {/* Fallback */}
         {screen !== 'questions' && screen !== 'results' && (
           <div className="text-center pt-20">
             <p className="text-slate-500 text-sm mb-4">Ready to calculate your tax?</p>

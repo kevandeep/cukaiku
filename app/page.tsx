@@ -4,6 +4,13 @@ import Link from 'next/link';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Logo } from '@/components/ui/Logo';
+
+const FEATURES = [
+  { icon: '💬', key: 'feature1' as const },
+  { icon: '📋', key: 'feature2' as const },
+  { icon: '✅', key: 'feature3' as const },
+];
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -13,17 +20,15 @@ export default function HomePage() {
       {/* Ambient glows */}
       <div className="fixed inset-0 pointer-events-none -z-0">
         <div className="absolute -top-1/5 -right-1/10 w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.03) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.04) 0%, transparent 70%)' }} />
         <div className="absolute -bottom-1/5 -left-1/10 w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.03) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 70%)' }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-[540px]">
+      <div className="relative z-10 w-full max-w-[560px]">
         {/* Top bar */}
-        <div className="flex justify-between items-center pt-3 mb-2">
-          <span className="text-[10px] font-mono text-slate-400 dark:text-slate-600 tracking-widest uppercase">
-            {t('headerBadge')}
-          </span>
+        <div className="flex justify-between items-center pt-3 mb-12">
+          <Logo />
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
@@ -31,32 +36,55 @@ export default function HomePage() {
         </div>
 
         {/* Hero */}
-        <div className="text-center pt-14 animate-fadeInSlow">
-          <div className="text-5xl mb-5 animate-float">🇲🇾</div>
+        <div className="animate-fadeInSlow">
+          {/* Flag */}
+          <div className="text-5xl mb-5 animate-float text-center">🇲🇾</div>
 
-          <h1 className="text-[2.1rem] font-extrabold text-slate-900 dark:text-slate-100 mb-2.5" style={{ fontFamily: 'Georgia, serif' }}>
-            {t('appName')}
+          {/* Year badge */}
+          <div className="text-center mb-5">
+            <span className="text-[10px] font-mono text-slate-400 dark:text-slate-600 tracking-widest uppercase border border-slate-300 dark:border-slate-700 px-2.5 py-1 rounded-full">
+              {t('headerBadge')}
+            </span>
+          </div>
+
+          {/* Main headline */}
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-4 leading-tight text-center">
+            {t('heroHeadline')}
           </h1>
 
-          <p className="text-base text-slate-500 dark:text-slate-400 mb-2">{t('tagline')}</p>
-
-          <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto mb-10">
-            {t('subtitle')}
+          {/* Form BE sub-headline — the key differentiator */}
+          <p className="text-base text-slate-500 dark:text-slate-400 mb-9 text-center leading-relaxed max-w-md mx-auto">
+            {t('heroSubheadline')}
           </p>
 
-          <Link
-            href="/calculator"
-            className="inline-block px-11 py-3.5 text-sm font-semibold text-slate-900 rounded-xl cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.99]"
-            style={{ background: 'linear-gradient(135deg, #22d3ee, #a78bfa)', boxShadow: '0 4px 24px rgba(34,211,238,0.15)' }}
-          >
-            {t('startBtn')}
-          </Link>
+          {/* 3 feature bullets */}
+          <div className="mb-9 flex flex-col gap-2.5">
+            {FEATURES.map(f => (
+              <div
+                key={f.key}
+                className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800"
+              >
+                <span className="text-xl flex-shrink-0">{f.icon}</span>
+                <span className="text-sm text-slate-700 dark:text-slate-300">{t(f.key)}</span>
+              </div>
+            ))}
+          </div>
 
-          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-700 mt-4">{t('startNote')}</p>
+          {/* CTA */}
+          <div className="text-center">
+            <Link
+              href="/calculator"
+              className="inline-block px-12 py-3.5 text-base font-semibold text-slate-900 rounded-xl cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.99]"
+              style={{ background: 'linear-gradient(135deg, #22d3ee, #a78bfa)', boxShadow: '0 4px 24px rgba(34,211,238,0.18)' }}
+            >
+              {t('startBtn')}
+            </Link>
+            <p className="text-[10px] font-mono text-slate-500 dark:text-slate-700 mt-3">{t('startNote')}</p>
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-12 pb-5">
+        <div className="text-center mt-14 pb-5">
           <p className="text-[9px] font-mono text-slate-300 dark:text-slate-800">{t('footer')}</p>
         </div>
       </div>
