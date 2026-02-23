@@ -47,7 +47,7 @@ export function QuestionCard({ question, value, onChange, onNext, onBack, isFirs
   return (
     <div className="animate-fadeIn">
       <div className="text-4xl mb-3">{question.icon}</div>
-      <h2 className="text-lg font-semibold text-slate-100 mb-2 leading-snug">{question.question}</h2>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2 leading-snug">{question.question}</h2>
 
       {question.tip && (
         <div className="flex gap-2 mb-5 px-3 py-2.5 rounded-lg border-l-2 border-cyan-500 bg-cyan-400/[0.03] text-xs text-slate-500 leading-relaxed">
@@ -79,7 +79,7 @@ export function QuestionCard({ question, value, onChange, onNext, onBack, isFirs
           <button
             type="button"
             onClick={onBack}
-            className="px-5 py-2.5 text-sm border border-slate-700 rounded-lg text-slate-400 hover:border-slate-600 hover:text-slate-300 transition-all"
+            className="px-5 py-2.5 text-sm border border-slate-300 dark:border-slate-700 rounded-lg text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-700 dark:hover:text-slate-300 transition-all"
           >
             {t('back')}
           </button>
@@ -93,7 +93,7 @@ export function QuestionCard({ question, value, onChange, onNext, onBack, isFirs
             className={`ml-auto px-7 py-2.5 text-sm font-semibold rounded-lg transition-all ${
               canSubmit
                 ? 'text-slate-900 cursor-pointer'
-                : 'bg-slate-800 text-slate-600 cursor-default'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-default'
             }`}
             style={canSubmit ? { background: 'linear-gradient(135deg, #22d3ee, #a78bfa)' } : undefined}
           >

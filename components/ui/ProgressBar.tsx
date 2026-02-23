@@ -19,9 +19,9 @@ export function ProgressBar({ current, total, sectionKey }: ProgressBarProps) {
     <div className="mb-7">
       <div className="flex justify-between mb-1.5 text-xs">
         <span className="text-slate-500 tracking-wide">{t(sectionKey as MessageKey)}</span>
-        <span className="text-slate-600 font-mono">{current}/{total}</span>
+        <span className="text-slate-400 dark:text-slate-600 font-mono">{current}/{total}</span>
       </div>
-      <div className="h-[3px] bg-slate-800 rounded-full overflow-hidden">
+      <div className="h-[3px] bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #22d3ee, #a78bfa)' }}

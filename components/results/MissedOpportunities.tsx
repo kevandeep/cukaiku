@@ -22,7 +22,7 @@ export function MissedOpportunities({ r }: { r: ComputeResult }) {
               <span className="text-sm font-semibold text-amber-400">{m.name}</span>
               <span className="text-xs font-mono text-amber-400">up to {formatRM(m.potential)}</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">{m.tip}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{m.tip}</p>
           </div>
         ))}
       </div>

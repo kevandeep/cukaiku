@@ -25,7 +25,7 @@ export function YesNoInput({ value, onSelect }: YesNoInputProps) {
                 ? isYes
                   ? 'border-cyan-400 bg-cyan-400/10 text-cyan-400'
                   : 'border-red-400 bg-red-400/10 text-red-400'
-                : 'border-slate-700 bg-slate-900 text-slate-400 hover:border-slate-600'
+                : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600'
             }`}
           >
             {isYes ? t('yes') : t('no')}

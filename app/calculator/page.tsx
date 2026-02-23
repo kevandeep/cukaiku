@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/contexts/TranslationContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { QuestionCard } from '@/components/questions/QuestionCard';
 import { Results } from '@/components/results/Results';
@@ -13,7 +14,7 @@ export default function CalculatorPage() {
   const { screen, answers, current, qi, total, setAnswer, goNext, goBack, restart } = useCalculator();
 
   return (
-    <main className="min-h-screen bg-slate-950 flex justify-center px-4 py-4">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex justify-center px-4 py-4">
       {/* Ambient glows */}
       <div className="fixed inset-0 pointer-events-none -z-0">
         <div className="absolute -top-1/5 -right-1/10 w-[500px] h-[500px] rounded-full"
@@ -27,11 +28,14 @@ export default function CalculatorPage() {
         <div className="flex justify-between items-center pt-3 mb-4">
           <Link
             href="/"
-            className="text-[10px] font-mono text-slate-600 tracking-widest uppercase hover:text-slate-500 transition-colors"
+            className="text-[10px] font-mono text-slate-400 dark:text-slate-600 tracking-widest uppercase hover:text-slate-600 dark:hover:text-slate-500 transition-colors"
           >
             ← {t('appName')}
           </Link>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
         </div>
 
         {/* Questions */}
@@ -70,7 +74,7 @@ export default function CalculatorPage() {
         )}
 
         <div className="text-center mt-8 pb-5">
-          <p className="text-[9px] font-mono text-slate-800">{t('footer')}</p>
+          <p className="text-[9px] font-mono text-slate-300 dark:text-slate-800">{t('footer')}</p>
         </div>
       </div>
     </main>

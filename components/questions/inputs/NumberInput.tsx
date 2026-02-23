@@ -17,7 +17,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         <button
           type="button"
           onClick={() => onChange(String(Math.max(0, current - 1)))}
-          className="w-11 h-11 rounded-xl border border-slate-700 bg-slate-900 text-slate-100 text-2xl hover:border-slate-600 transition-colors flex items-center justify-center"
+          className="w-11 h-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-2xl hover:border-slate-400 dark:hover:border-slate-600 transition-colors flex items-center justify-center"
         >
           −
         </button>
@@ -28,12 +28,12 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           value={value}
           onChange={e => onChange(e.target.value)}
           onKeyDown={onKeyDown}
-          className="w-20 text-center text-2xl font-mono py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 outline-none focus:border-cyan-400 transition-colors"
+          className="w-20 text-center text-2xl font-mono py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-400 transition-colors"
         />
         <button
           type="button"
           onClick={() => onChange(String(current + 1))}
-          className="w-11 h-11 rounded-xl border border-slate-700 bg-slate-900 text-slate-100 text-2xl hover:border-slate-600 transition-colors flex items-center justify-center"
+          className="w-11 h-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-2xl hover:border-slate-400 dark:hover:border-slate-600 transition-colors flex items-center justify-center"
         >
           +
         </button>

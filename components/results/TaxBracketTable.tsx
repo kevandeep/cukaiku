@@ -19,14 +19,14 @@ export function TaxBracketTable({ r }: { r: ComputeResult }) {
 
   return (
     <div className="mb-7">
-      <h3 className="text-sm font-semibold text-slate-100 mb-3">{t('bracketsTitle')}</h3>
-      <div className="bg-slate-900 rounded-xl p-3.5 border border-slate-800">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">{t('bracketsTitle')}</h3>
+      <div className="bg-white dark:bg-slate-900 rounded-xl p-3.5 border border-slate-200 dark:border-slate-800">
         {rows.map(({ b, taxable, taxOnBand }, i) => (
           <div
             key={i}
-            className="flex justify-between py-1.5 border-b border-slate-800 last:border-0 text-xs"
+            className="flex justify-between py-1.5 border-b border-slate-200 dark:border-slate-800 last:border-0 text-xs"
           >
-            <span className="text-slate-400">
+            <span className="text-slate-500 dark:text-slate-400">
               {formatRM(b.min)} – {b.max === Infinity ? 'above' : formatRM(b.max)}
             </span>
             <span className="font-mono text-slate-500">{b.rate}%</span>

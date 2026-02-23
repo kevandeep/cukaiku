@@ -16,14 +16,24 @@ input[type=number] {
   background: rgba(34, 211, 238, 0.3);
 }
 
+/* Scrollbar CSS variables */
+:root {
+  --scrollbar-bg: #F8FAFC;
+  --scrollbar-thumb: #CBD5E1;
+}
+.dark {
+  --scrollbar-bg: #020617;
+  --scrollbar-thumb: #334155;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: var(--scrollbar-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--scrollbar-thumb);
   border-radius: 2px;
 }

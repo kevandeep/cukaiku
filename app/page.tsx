@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function HomePage() {
   const { t } = useTranslation();
 
   return (
-    <main className="min-h-screen bg-slate-950 flex justify-center px-4 py-4">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex justify-center px-4 py-4">
       {/* Ambient glows */}
       <div className="fixed inset-0 pointer-events-none -z-0">
         <div className="absolute -top-1/5 -right-1/10 w-[500px] h-[500px] rounded-full"
@@ -20,21 +21,24 @@ export default function HomePage() {
       <div className="relative z-10 w-full max-w-[540px]">
         {/* Top bar */}
         <div className="flex justify-between items-center pt-3 mb-2">
-          <span className="text-[10px] font-mono text-slate-600 tracking-widest uppercase">
+          <span className="text-[10px] font-mono text-slate-400 dark:text-slate-600 tracking-widest uppercase">
             {t('headerBadge')}
           </span>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
         </div>
 
         {/* Hero */}
         <div className="text-center pt-14 animate-fadeInSlow">
           <div className="text-5xl mb-5 animate-float">🇲🇾</div>
 
-          <h1 className="text-[2.1rem] font-extrabold text-slate-100 mb-2.5" style={{ fontFamily: 'Georgia, serif' }}>
+          <h1 className="text-[2.1rem] font-extrabold text-slate-900 dark:text-slate-100 mb-2.5" style={{ fontFamily: 'Georgia, serif' }}>
             {t('appName')}
           </h1>
 
-          <p className="text-base text-slate-400 mb-2">{t('tagline')}</p>
+          <p className="text-base text-slate-500 dark:text-slate-400 mb-2">{t('tagline')}</p>
 
           <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto mb-10">
             {t('subtitle')}
@@ -48,12 +52,12 @@ export default function HomePage() {
             {t('startBtn')}
           </Link>
 
-          <p className="text-[10px] font-mono text-slate-700 mt-4">{t('startNote')}</p>
+          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-700 mt-4">{t('startNote')}</p>
         </div>
 
         {/* Footer */}
         <div className="text-center mt-12 pb-5">
-          <p className="text-[9px] font-mono text-slate-800">{t('footer')}</p>
+          <p className="text-[9px] font-mono text-slate-300 dark:text-slate-800">{t('footer')}</p>
         </div>
       </div>
     </main>

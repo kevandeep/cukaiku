@@ -1,7 +1,11 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { TranslationProvider } from '@/contexts/TranslationContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { Analytics } from '@vercel/analytics/react';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'CukaiKu — Malaysian Tax Relief Calculator YA 2025',
@@ -28,14 +32,19 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#020617',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#020617' },
+    { media: '(prefers-color-scheme: light)', color: '#F8FAFC' },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-slate-950 text-slate-100 antialiased font-sans">
-        <TranslationProvider>{children}</TranslationProvider>
+    <html lang="en" className={`dark ${inter.variable}`} suppressHydrationWarning>
+      <body className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased font-sans">
+        <ThemeProvider>
+          <TranslationProvider>{children}</TranslationProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

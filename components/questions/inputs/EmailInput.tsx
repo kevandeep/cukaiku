@@ -20,7 +20,7 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
         onChange={e => onChange(e.target.value)}
         onKeyDown={onKeyDown}
         placeholder={t('emailPlaceholder')}
-        className="w-full py-3.5 px-4 text-base bg-slate-900 border border-slate-700 rounded-xl text-slate-100 outline-none focus:border-cyan-400 transition-colors"
+        className="w-full py-3.5 px-4 text-base bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-400 transition-colors"
       />
     );
   }

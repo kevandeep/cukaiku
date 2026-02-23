@@ -53,9 +53,9 @@ export function Results({ answers, onRestart }: ResultsProps) {
       {r.totalRebate > 0 && (
         <div className="mb-7 rounded-xl px-4 py-3.5 border border-emerald-400/15 bg-emerald-400/[0.04]">
           <h3 className="text-sm font-semibold text-emerald-400 mb-2.5">{t('rebatesTitle')}</h3>
-          {r.zakat       > 0 && <p className="text-sm text-slate-300 mb-1">🕌 Zakat / Fitrah: {formatRM(r.zakat)}</p>}
-          {r.selfRebate  > 0 && <p className="text-sm text-slate-300 mb-1">👤 Self rebate: {formatRM(r.selfRebate)}</p>}
-          {r.spouseRebate > 0 && <p className="text-sm text-slate-300">👫 Spouse rebate: {formatRM(r.spouseRebate)}</p>}
+          {r.zakat       > 0 && <p className="text-sm text-slate-700 dark:text-slate-300 mb-1">🕌 Zakat / Fitrah: {formatRM(r.zakat)}</p>}
+          {r.selfRebate  > 0 && <p className="text-sm text-slate-700 dark:text-slate-300 mb-1">👤 Self rebate: {formatRM(r.selfRebate)}</p>}
+          {r.spouseRebate > 0 && <p className="text-sm text-slate-700 dark:text-slate-300">👫 Spouse rebate: {formatRM(r.spouseRebate)}</p>}
         </div>
       )}
 
