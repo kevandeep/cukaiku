@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy init — Resend must not be created at module level or Next.js build fails
+// (env vars are not available at static analysis time, only at runtime)
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY!);
+}
 
 export interface EmailPayload {
   to: string;
@@ -117,7 +121,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       from:    'CukaiKu <noreply@cukaiku.vercel.app>',
       to:      payload.to,
       subject: `Your YA 2025 Tax Summary — Form ${payload.formType} | CukaiKu`,
