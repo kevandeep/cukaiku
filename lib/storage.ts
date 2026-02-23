@@ -50,9 +50,11 @@ export async function saveCheckpoint(payload: CheckpointPayload): Promise<void> 
   try {
     await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      // 'no-cors' + 'text/plain' avoids CORS preflight — Google Apps Script
+      // still receives the JSON via e.postData.contents and can JSON.parse it.
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload),
-      // 5-second timeout — don't block the user
       signal: AbortSignal.timeout(5000),
     });
   } catch {
