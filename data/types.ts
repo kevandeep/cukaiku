@@ -57,4 +57,8 @@ export interface ComputeResult {
   zakat: number;
   selfRebate: number;
   spouseRebate: number;
+  // PCB & balance
+  pcb: number;
+  balanceDue: number;   // positive = you still owe LHDN; negative = refund
+  formType: 'BE' | 'B' | 'M';
 }

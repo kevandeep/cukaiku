@@ -10,6 +10,9 @@ export function computeAll(a: Answers): ComputeResult {
   const p = (v: string | undefined) => parseFloat(v ?? '0') || 0;
   const n = (v: string | undefined) => parseInt(v ?? '0') || 0;
 
+  const formType = (a.formType ?? 'BE') as 'BE' | 'B' | 'M';
+  const pcb = p(a.pcbAmount);
+
   // ── INCOME ──────────────────────────────────────────────────────────────────
   const employment   = p(a.employmentIncome);
   const rentalNet    = a.hasRentalIncome === 'yes'
@@ -21,20 +24,46 @@ export function computeAll(a: Answers): ComputeResult {
   const other        = a.hasOtherIncome    === 'yes' ? p(a.otherIncome)     : 0;
   const otherStatutory = interest + royalty + pension + other;
 
+  // Form B: add adjusted business income (gross - expenses = statutory income)
+  const businessIncome = formType === 'B' ? p(a.businessAdjustedIncome) : 0;
+
   // FIX: Dividends from resident companies (above RM100k threshold) are taxed at
   // a FLAT 2% rate — they are NOT subject to the progressive brackets.
   // v2 incorrectly included dividend in totalIncome, causing double taxation.
   const dividend     = a.hasDividendIncome === 'yes' ? p(a.dividendIncome)  : 0;
 
-  // Progressive bracket income: employment + rental + other statutory ONLY
-  const totalIncome  = employment + rentalNet + otherStatutory;
+  // Progressive bracket income: employment + rental + other statutory + business (Form B)
+  const totalIncome  = employment + rentalNet + otherStatutory + businessIncome;
 
-  // Form BE — Income section
+  // ── FORM M: Non-resident flat 30% — no personal reliefs ─────────────────────
+  if (formType === 'M') {
+    const flatTax     = totalIncome * 0.30;
+    const balanceDue  = flatTax - pcb;
+
+    formFields.push({ section: 'B', ref: 'C1', label: 'Employment income', value: employment, highlight: employment > 0 });
+    if (rentalNet > 0) formFields.push({ section: 'B', ref: 'C2', label: 'Rental income (net)', value: rentalNet, highlight: true });
+    if (otherStatutory > 0) formFields.push({ section: 'B', ref: 'C3', label: 'Other income', value: otherStatutory, highlight: true });
+    formFields.push({ section: 'E', ref: 'E_TOTAL', label: 'Total income', value: totalIncome, highlight: true, bold: true });
+    formFields.push({ section: 'E', ref: 'E_TAX', label: 'Tax payable (30% flat rate — non-resident)', value: flatTax, highlight: true, bold: true });
+    if (pcb > 0) formFields.push({ section: 'H', ref: 'H4', label: 'PCB deducted by employer', value: pcb, highlight: true });
+
+    return {
+      reliefs: [], missed: [], formFields,
+      totalIncome, totalRelief: 0, chargeableIncome: totalIncome,
+      taxBeforeRebate: flatTax, dividend: 0, dividendTax: 0,
+      totalRebate: 0, finalTax: flatTax, taxSaved: 0,
+      zakat: 0, selfRebate: 0, spouseRebate: 0,
+      pcb, balanceDue, formType,
+    };
+  }
+
+  // Form BE/B — Income section
   formFields.push({ section: 'B', ref: 'C1',  label: 'Statutory employment income', value: employment, highlight: employment > 0 });
   formFields.push({ section: 'B', ref: 'C2',  label: 'Statutory rental income (net)', value: rentalNet, highlight: rentalNet > 0 });
   formFields.push({ section: 'B', ref: 'C3',  label: 'Interest, discounts, royalties, premiums, pensions, annuities, other', value: otherStatutory, highlight: otherStatutory > 0 });
+  if (businessIncome > 0) formFields.push({ section: 'B', ref: 'C6', label: 'Statutory business income (adjusted)', value: businessIncome, highlight: true });
   if (dividend > 0) formFields.push({ section: 'B', ref: 'C3a', label: 'Dividend income (above RM100k — flat 2% tax, verify with LHDN)', value: dividend, highlight: true });
-  // Aggregate income on Form BE includes all income for reference
+  // Aggregate income includes all income for reference
   formFields.push({ section: 'C', ref: 'C4',  label: 'Aggregate income', value: totalIncome + dividend, highlight: true });
 
   // ── DONATIONS (deduction from aggregate income, not a relief) ───────────────
@@ -198,19 +227,30 @@ export function computeAll(a: Answers): ComputeResult {
   const totalRebate = zakat + selfRebate + spouseRebate;
   const finalTax    = Math.max(0, taxWithDividend - totalRebate);
 
+  // PCB already paid by employer → balance due (negative = refund from LHDN)
+  const balanceDue  = finalTax - pcb;
+
   // Tax saved = tax if only mandatory individual relief was claimed vs actual final tax
   const taxWithoutRelief = calculateTax(Math.max(0, totalIncomeAfterDed - RELIEF_LIMITS.individual));
   const taxSaved = taxWithoutRelief - finalTax;
 
-  // Form BE — computation section
-  formFields.push({ section: 'D', ref: 'D_TOTAL',  label: 'Total tax reliefs',                value: totalRelief,     highlight: true, bold: true });
+  // Form BE/B — computation section
+  formFields.push({ section: 'D', ref: 'D_TOTAL',  label: 'Total tax reliefs',                value: totalRelief,      highlight: true, bold: true });
   formFields.push({ section: 'E', ref: 'E1',        label: 'Chargeable income',                value: chargeableIncome, highlight: true, bold: true });
   formFields.push({ section: 'E', ref: 'E2',        label: 'Tax on chargeable income',         value: taxBeforeRebate,  highlight: true });
-  if (dividendTax > 0) formFields.push({ section: 'E', ref: 'E2a', label: 'Tax on dividend income (2% flat)', value: dividendTax, highlight: true });
+  if (dividendTax > 0) formFields.push({ section: 'E', ref: 'E2a', label: 'Tax on dividend income (2% flat)', value: dividendTax,  highlight: true });
   if (zakat        > 0) formFields.push({ section: 'F', ref: 'F1', label: 'Zakat / fitrah rebate',             value: zakat,        highlight: true });
-  if (selfRebate   > 0) formFields.push({ section: 'F', ref: 'F2', label: 'Self rebate (chargeable income ≤ RM35,000)', value: selfRebate,   highlight: true });
+  if (selfRebate   > 0) formFields.push({ section: 'F', ref: 'F2', label: 'Self rebate (chargeable income ≤ RM35,000)', value: selfRebate, highlight: true });
   if (spouseRebate > 0) formFields.push({ section: 'F', ref: 'F3', label: 'Spouse rebate',                    value: spouseRebate, highlight: true });
-  formFields.push({ section: 'E', ref: 'E_FINAL',   label: 'TAX PAYABLE',                      value: finalTax,        highlight: true, bold: true });
+  formFields.push({ section: 'E', ref: 'E_FINAL',   label: 'TAX PAYABLE',                      value: finalTax,         highlight: true, bold: true });
+  if (pcb > 0) {
+    formFields.push({ section: 'H', ref: 'H4', label: 'PCB / monthly tax deductions', value: pcb, highlight: true });
+    formFields.push({
+      section: 'H', ref: 'H_BAL',
+      label: balanceDue >= 0 ? 'Balance payable to LHDN' : 'Refund from LHDN',
+      value: Math.abs(balanceDue), highlight: true, bold: true,
+    });
+  }
 
   return {
     reliefs, missed, formFields,
@@ -218,5 +258,6 @@ export function computeAll(a: Answers): ComputeResult {
     taxBeforeRebate, dividend, dividendTax,
     totalRebate, finalTax, taxSaved,
     zakat, selfRebate, spouseRebate,
+    pcb, balanceDue, formType,
   };
 }

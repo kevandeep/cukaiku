@@ -3,7 +3,23 @@ import type { Answers, Question } from './types';
 // TODO Week 2: Move question/tip text to i18n JSON files for BM and ZH translations.
 // Each question.question and question.tip should become a key lookup.
 
+// Form M (non-resident) has no personal reliefs — income questions still apply
+const notM = (a: Answers) => a.formType !== 'M';
+
 export const QUESTIONS: Question[] = [
+  // ═══ FORM TYPE ═══
+  {
+    id: 'formType', section: 'secFormType',
+    question: 'Which LHDN tax form applies to you?',
+    tip: 'Form BE: resident with employment/rental income only. Form B: resident with business income (sole proprietor, partnership, freelancer with registered business). Form M: non-resident individual.',
+    type: 'select', icon: '📋',
+    options: [
+      { value: 'BE', label: 'Form BE — Resident, no business income (most common)' },
+      { value: 'B',  label: 'Form B — Resident with business income' },
+      { value: 'M',  label: 'Form M — Non-resident individual' },
+    ],
+  },
+
   // ═══ INCOME ═══
   {
     id: 'employmentIncome', section: 'secIncome',
@@ -11,6 +27,22 @@ export const QUESTIONS: Question[] = [
     tip: 'From your EA form (Section B). Includes salary, bonuses, commissions, allowances, gratuity, director fees. Maps to Form BE field C1.',
     type: 'currency', icon: '💰', formRef: 'C1',
   },
+  // ═══ BUSINESS INCOME (Form B only) ═══
+  {
+    id: 'businessGrossIncome', section: 'secBusiness',
+    question: 'What is your gross business income? (sales, fees, commissions before expenses)',
+    tip: 'Include all revenue from your sole proprietorship, partnership share, or registered freelance business. This is before any business deductions.',
+    type: 'currency', icon: '🏪', formRef: 'C6',
+    showIf: (a: Answers) => a.formType === 'B',
+  },
+  {
+    id: 'businessAdjustedIncome', section: 'secBusiness',
+    question: 'What is your adjusted business income (after deducting allowable business expenses)?',
+    tip: 'From your business accounts: gross income minus allowable expenses (salaries, rent, depreciation via capital allowances, cost of goods, utilities, etc.). This is your statutory business income.',
+    type: 'currency', icon: '🏪', formRef: 'C6',
+    showIf: (a: Answers) => a.formType === 'B',
+  },
+
   {
     id: 'hasRentalIncome', section: 'secOtherIncome',
     question: 'Do you receive rental income from property?',
@@ -99,7 +131,7 @@ export const QUESTIONS: Question[] = [
   {
     id: 'maritalStatus', section: 'secPersonal',
     question: 'What is your marital status?',
-    type: 'select', icon: '💍',
+    type: 'select', icon: '💍', showIf: notM,
     options: [
       { value: 'single', label: 'Single' },
       { value: 'married', label: 'Married' },
@@ -110,7 +142,7 @@ export const QUESTIONS: Question[] = [
     id: 'spouseWorking', section: 'secPersonal',
     question: 'Does your spouse have their own income?',
     tip: 'If no income or joint assessment: claim RM4,000 spouse relief.',
-    type: 'select', showIf: (a: Answers) => a.maritalStatus === 'married', icon: '👫',
+    type: 'select', showIf: (a: Answers) => notM(a) && a.maritalStatus === 'married', icon: '👫',
     options: [
       { value: 'no', label: 'No income / Joint assessment' },
       { value: 'yes', label: 'Yes, separate assessment' },
@@ -120,47 +152,47 @@ export const QUESTIONS: Question[] = [
     id: 'isDisabled', section: 'secPersonal',
     question: 'Are you registered as a disabled person (OKU) with JKM?',
     tip: 'Additional RM7,000 on top of standard RM9,000 individual relief.',
-    type: 'yesno', icon: '♿',
+    type: 'yesno', icon: '♿', showIf: notM,
   },
   {
     id: 'spouseDisabled', section: 'secPersonal',
     question: 'Is your spouse registered as disabled (OKU)?',
     tip: 'Additional RM6,000 relief.',
-    type: 'yesno', showIf: (a: Answers) => a.maritalStatus === 'married', icon: '♿',
+    type: 'yesno', showIf: (a: Answers) => notM(a) && a.maritalStatus === 'married', icon: '♿',
   },
 
   // ═══ CHILDREN ═══
   {
     id: 'hasChildren', section: 'secChildren',
     question: 'Do you have children?',
-    type: 'yesno', icon: '👶',
+    type: 'yesno', icon: '👶', showIf: notM,
   },
   {
     id: 'childrenUnder18', section: 'secChildren',
     question: 'How many unmarried children under 18?',
     tip: 'RM2,000 per child.',
-    type: 'number', showIf: (a: Answers) => a.hasChildren === 'yes',
+    type: 'number', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes',
     icon: '🧒', formRef: 'D9',
   },
   {
     id: 'childrenHigherEdu', section: 'secChildren',
     question: 'How many children (18+) in full-time higher education (diploma/degree/masters)?',
     tip: 'RM8,000 per child at diploma level or above.',
-    type: 'number', showIf: (a: Answers) => a.hasChildren === 'yes',
+    type: 'number', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes',
     icon: '🎓', formRef: 'D10',
   },
   {
     id: 'childrenPreU', section: 'secChildren',
     question: 'How many children (18+) in pre-U / A-Levels / matriculation?',
     tip: 'RM2,000 per child in pre-university.',
-    type: 'number', showIf: (a: Answers) => a.hasChildren === 'yes',
+    type: 'number', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes',
     icon: '📚', formRef: 'D10',
   },
   {
     id: 'disabledChildren', section: 'secChildren',
     question: 'How many disabled children (registered OKU)?',
     tip: 'RM8,000 per disabled child. Additional RM8,000 if in higher edu.',
-    type: 'number', showIf: (a: Answers) => a.hasChildren === 'yes',
+    type: 'number', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes',
     icon: '♿', formRef: 'D11',
   },
   {
@@ -173,7 +205,7 @@ export const QUESTIONS: Question[] = [
     id: 'hasBreastfeedingChild', section: 'secChildren',
     question: 'Purchased breastfeeding equipment for a child aged 2 or below?',
     tip: 'Up to RM1,000. Claimable once every 2 years.',
-    type: 'yesno', showIf: (a: Answers) => a.hasChildren === 'yes', icon: '🍼',
+    type: 'yesno', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes', icon: '🍼',
   },
   {
     id: 'breastfeedingAmount', section: 'secChildren',
@@ -185,7 +217,7 @@ export const QUESTIONS: Question[] = [
     id: 'childcareFees', section: 'secChildren',
     question: 'Paid childcare / kindergarten fees for children aged 6 or below?',
     tip: 'Up to RM3,000 for registered centres.',
-    type: 'yesno', showIf: (a: Answers) => a.hasChildren === 'yes', icon: '🏫',
+    type: 'yesno', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes', icon: '🏫',
   },
   {
     id: 'childcareAmount', section: 'secChildren',
@@ -197,7 +229,7 @@ export const QUESTIONS: Question[] = [
     id: 'sspnDeposit', section: 'secChildren',
     question: 'Made net deposits into SSPN (education savings) this year?',
     tip: 'Net deposit = total deposits minus total withdrawals in the year. Up to RM8,000.',
-    type: 'yesno', showIf: (a: Answers) => a.hasChildren === 'yes', icon: '🎒',
+    type: 'yesno', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes', icon: '🎒',
   },
   {
     id: 'sspnAmount', section: 'secChildren',
@@ -209,7 +241,7 @@ export const QUESTIONS: Question[] = [
     id: 'learningDisability', section: 'secChildren',
     question: 'Spent on learning disability assessment / intervention for a child aged 18 or below?',
     tip: 'Up to RM6,000 for diagnosis, early intervention, rehabilitation.',
-    type: 'yesno', showIf: (a: Answers) => a.hasChildren === 'yes', icon: '🧠',
+    type: 'yesno', showIf: (a: Answers) => notM(a) && a.hasChildren === 'yes', icon: '🧠',
   },
   {
     id: 'learningDisabilityAmount', section: 'secChildren',
@@ -223,7 +255,7 @@ export const QUESTIONS: Question[] = [
     id: 'parentsMedical', section: 'secParents',
     question: 'Paid medical / carer / dental expenses for parents or grandparents?',
     tip: 'Parents must reside in Malaysia. Includes dental, nursing home, medical treatment. Up to RM8,000.',
-    type: 'yesno', icon: '👴',
+    type: 'yesno', icon: '👴', showIf: notM,
   },
   {
     id: 'parentsMedicalAmount', section: 'secParents',
@@ -237,7 +269,7 @@ export const QUESTIONS: Question[] = [
     id: 'selfEducation', section: 'secEduLifestyle',
     question: 'Paid for education / professional courses for yourself?',
     tip: 'Masters/PhD: any course. Others: law, accounting, technical, vocational, upskilling (RM2,000 sub-limit). Up to RM7,000 total.',
-    type: 'yesno', icon: '📖',
+    type: 'yesno', icon: '📖', showIf: notM,
   },
   {
     id: 'educationAmount', section: 'secEduLifestyle',
@@ -249,13 +281,13 @@ export const QUESTIONS: Question[] = [
     id: 'lifestyleSpending', section: 'secEduLifestyle',
     question: 'Total lifestyle spending? (Books, PC, phone, internet, sports equipment, gym)',
     tip: 'Books, laptops, phones, tablets, internet bills, sports equipment, gym memberships. Up to RM2,500.',
-    type: 'currency', max: 2500, icon: '📱', formRef: 'D7',
+    type: 'currency', max: 2500, icon: '📱', formRef: 'D7', showIf: notM,
   },
   {
     id: 'additionalSports', section: 'secEduLifestyle',
     question: 'Additional sports spending beyond the lifestyle limit?',
     tip: 'Extra RM1,000 for sports equipment, facility rental, competition fees, gym.',
-    type: 'yesno', icon: '🏋️',
+    type: 'yesno', icon: '🏋️', showIf: notM,
   },
   {
     id: 'additionalSportsAmount', section: 'secEduLifestyle',
@@ -267,7 +299,7 @@ export const QUESTIONS: Question[] = [
     id: 'hasEV', section: 'secEduLifestyle',
     question: 'Installed EV charging equipment at home, or purchased a domestic compost machine?',
     tip: 'Up to RM2,500 for EV charging facilities or domestic compost machines.',
-    type: 'yesno', icon: '🔌',
+    type: 'yesno', icon: '🔌', showIf: notM,
   },
   {
     id: 'evAmount', section: 'secEduLifestyle',
@@ -281,7 +313,7 @@ export const QUESTIONS: Question[] = [
     id: 'medicalSelf', section: 'secMedical',
     question: 'Medical expenses for serious diseases, fertility treatment, vaccines, dental, or mental health?',
     tip: 'Overall cap RM10,000. Sub-limits: vaccines RM1,000, dental RM1,000, health screening/mental health RM1,000.',
-    type: 'yesno', icon: '🏥',
+    type: 'yesno', icon: '🏥', showIf: notM,
   },
   {
     id: 'medicalSelfAmount', section: 'secMedical',
@@ -293,7 +325,7 @@ export const QUESTIONS: Question[] = [
     id: 'disabledEquipment', section: 'secMedical',
     question: 'Purchased equipment for a disabled person (self, spouse, child, or parent)?',
     tip: 'Wheelchairs, hearing aids, dialysis machines, crutches. Up to RM6,000. Spectacles are NOT included.',
-    type: 'yesno', icon: '🦽',
+    type: 'yesno', icon: '🦽', showIf: notM,
   },
   {
     id: 'disabledEquipmentAmount', section: 'secMedical',
@@ -307,31 +339,31 @@ export const QUESTIONS: Question[] = [
     id: 'epfAmount', section: 'secInsurance',
     question: 'EPF contributions this year?',
     tip: 'Check your EPF statement. Private sector: EPF cap is RM4,000 for relief purposes.',
-    type: 'currency', max: 4000, icon: '🏦', formRef: 'D17a',
+    type: 'currency', max: 4000, icon: '🏦', formRef: 'D17a', showIf: notM,
   },
   {
     id: 'lifeInsurance', section: 'secInsurance',
     question: 'Life insurance / takaful premiums paid this year?',
     tip: 'EPF + life insurance combined cap is RM7,000. Life insurance alone capped at RM3,000.',
-    type: 'currency', max: 3000, icon: '🛡️', formRef: 'D17b',
+    type: 'currency', max: 3000, icon: '🛡️', formRef: 'D17b', showIf: notM,
   },
   {
     id: 'eduMedInsurance', section: 'secInsurance',
     question: 'Education or medical insurance premiums?',
     tip: 'For self, spouse, or child. Up to RM4,000.',
-    type: 'currency', max: 4000, icon: '🏥', formRef: 'D18',
+    type: 'currency', max: 4000, icon: '🏥', formRef: 'D18', showIf: notM,
   },
   {
     id: 'socso', section: 'secInsurance',
     question: 'SOCSO / EIS contribution this year?',
     tip: 'Check your payslip. Cap is RM350.',
-    type: 'currency', max: 350, icon: '📋', formRef: 'D19',
+    type: 'currency', max: 350, icon: '📋', formRef: 'D19', showIf: notM,
   },
   {
     id: 'prsContribution', section: 'secInsurance',
     question: 'Contributed to a Private Retirement Scheme (PRS)?',
     tip: 'Up to RM3,000. Separate from EPF. Saves tax AND builds retirement savings!',
-    type: 'yesno', icon: '🎯',
+    type: 'yesno', icon: '🎯', showIf: notM,
   },
   {
     id: 'prsAmount', section: 'secInsurance',
@@ -345,7 +377,7 @@ export const QUESTIONS: Question[] = [
     id: 'firstHomeLoan', section: 'secHousing',
     question: 'Are you paying a housing loan for your FIRST residential property, with SPA signed between 2025–2027?',
     tip: 'New from YA 2025! Claim interest paid on your first home loan. Must be a residential property.',
-    type: 'yesno', icon: '🏠',
+    type: 'yesno', icon: '🏠', showIf: notM,
   },
   {
     id: 'housePrice', section: 'secHousing',
@@ -370,7 +402,7 @@ export const QUESTIONS: Question[] = [
     id: 'hasDonations', section: 'secDeductions',
     question: 'Made donations to approved charities, sports bodies, or government funds?',
     tip: 'Up to 10% of aggregate income. Includes LHDN-approved institutions, sports activities, national interest projects, wakaf. Keep receipts.',
-    type: 'yesno', icon: '🤲',
+    type: 'yesno', icon: '🤲', showIf: notM,
   },
   {
     id: 'donationAmount', section: 'secDeductions',
@@ -380,12 +412,21 @@ export const QUESTIONS: Question[] = [
     icon: '🤲', formRef: 'C7',
   },
 
+  // ═══ PCB (Monthly Tax Deduction) ═══
+  {
+    id: 'pcbAmount', section: 'secPcb',
+    question: 'Total PCB (Potongan Cukai Bulanan) deducted by your employer this year?',
+    tip: 'Check your EA form (Section C) or total up your monthly payslips. PCB is the monthly tax already withheld by your employer — it reduces what you still owe LHDN. If PCB > tax payable, you get a refund.',
+    type: 'currency', icon: '🏦', formRef: 'H4',
+    showIf: (a: Answers) => a.formType !== 'M',
+  },
+
   // ═══ REBATES ═══
   {
     id: 'zakatAmount', section: 'secRebates',
     question: 'Paid zakat or fitrah this year? If so, how much?',
     tip: 'Zakat is a DIRECT tax rebate — it reduces your tax payable ringgit-for-ringgit, not just your chargeable income.',
-    type: 'currency', icon: '🕌', formRef: 'F1',
+    type: 'currency', icon: '🕌', formRef: 'F1', showIf: notM,
   },
 
   // ═══ EMAIL ═══

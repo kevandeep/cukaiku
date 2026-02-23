@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { formatRM } from '@/engine/taxCalculator';
 import { computeAll } from '@/engine/reliefEngine';
@@ -18,6 +19,31 @@ interface ResultsProps {
 export function Results({ answers, onRestart }: ResultsProps) {
   const { t } = useTranslation();
   const r = computeAll(answers);
+  const emailSent = useRef(false);
+
+  // Send summary email once if user provided their email address
+  useEffect(() => {
+    const email = answers['email'];
+    if (!email || !email.includes('@') || emailSent.current) return;
+    emailSent.current = true;
+
+    fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to:             email,
+        formType:       r.formType,
+        totalIncome:    r.totalIncome,
+        totalRelief:    r.totalRelief,
+        finalTax:       r.finalTax,
+        chargeableIncome: r.chargeableIncome,
+        pcb:            r.pcb,
+        balanceDue:     r.balanceDue,
+        taxSaved:       r.taxSaved,
+      }),
+    }).catch(() => { /* fail silently */ });
+  }, [answers, r]);
+
 
   return (
     <div className="animate-fadeInSlow">
