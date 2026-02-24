@@ -40,6 +40,8 @@ export function Results({ answers, onRestart }: ResultsProps) {
         pcb:            r.pcb,
         balanceDue:     r.balanceDue,
         taxSaved:       r.taxSaved,
+        formFields:     r.formFields,
+        missed:         r.missed,
       }),
     }).catch(() => { /* fail silently */ });
   }, [answers, r]);
