@@ -259,7 +259,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { error } = await getResend().emails.send({
-      from:    'CukaiKu <noreply@cukaiku.vercel.app>',
+      from:    'CukaiKu <onboarding@resend.dev>',
       to:      payload.to,
       subject: `Your YA 2025 Tax Summary — Form ${payload.formType} | CukaiKu`,
       html:    buildEmailHtml(payload),
