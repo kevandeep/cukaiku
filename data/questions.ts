@@ -450,8 +450,8 @@ export const QUESTIONS: Question[] = [
   // ═══ EMAIL ═══
   {
     id: 'email', section: 'secEmail',
-    question: 'Want a reminder in November to maximize your year-end reliefs?',
-    tip: 'Every year, Malaysians leave money on the table by missing the December 31 top-up deadline for reliefs like PRS, SSPN, lifestyle, and insurance. We\'ll send one reminder in November with your personalised checklist — showing exactly which reliefs you can still top up before year-end. No spam, no marketing emails, just one useful reminder. Your email is never shared with third parties.',
+    question: 'Enter your email to receive your personalised LHDN form guide',
+    tip: 'We\'ll email you a PDF that mirrors the actual LHDN Borang BE/B/M layout with your calculated amounts pre-filled into the correct fields. The form guide is in Bahasa Malaysia — matching the real LHDN form — so you can use it side-by-side while doing your e-Filing on MyTax. No spam, just your form guide.',
     type: 'email', icon: '📧',
   },
 ];

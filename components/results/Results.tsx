@@ -17,7 +17,7 @@ interface ResultsProps {
 }
 
 export function Results({ answers, onRestart }: ResultsProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const r = computeAll(answers);
   const emailSent = useRef(false);
 
@@ -31,17 +31,18 @@ export function Results({ answers, onRestart }: ResultsProps) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to:             email,
-        formType:       r.formType,
-        totalIncome:    r.totalIncome,
-        totalRelief:    r.totalRelief,
-        finalTax:       r.finalTax,
+        to:               email,
+        locale,
+        formType:         r.formType,
+        totalIncome:      r.totalIncome,
+        totalRelief:      r.totalRelief,
+        finalTax:         r.finalTax,
         chargeableIncome: r.chargeableIncome,
-        pcb:            r.pcb,
-        balanceDue:     r.balanceDue,
-        taxSaved:       r.taxSaved,
-        formFields:     r.formFields,
-        missed:         r.missed,
+        pcb:              r.pcb,
+        balanceDue:       r.balanceDue,
+        taxSaved:         r.taxSaved,
+        formFields:       r.formFields,
+        missed:           r.missed,
       }),
     }).catch(() => { /* fail silently */ });
   }, [answers, r]);
